@@ -174,3 +174,5 @@ Content-Type: application/json
 - 用户相关
 - 文章相关
 - 标签相关
+
+## 提取控制器模块
