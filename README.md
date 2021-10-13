@@ -143,3 +143,34 @@ Content-Type: application/json
 - http://www.ruanyifeng.com/blog/2014/05/restful_api.html
 - https://www.ruanyifeng.com/blog/2018/10/restful-api-best-practices.html
 - https://www.zhihu.com/question/28557115
+
+
+# 项目目录结构
+```
+.
+├── config	# 配置文件
+│   └── config.default.js
+├── controller	# 用于解析用户的输入，处理后返回相应的结果
+├── model	# 数据持久层
+├── middleware	# 用于编写中间件
+├── router	# 用于配置 URL 路由规则
+├── util	# 工具模块
+└── app.js	# 用于自定义启动时的初始化工作
+```
+
+## 配置常用中间件
+- 解析请求体
+  - express.json()
+  - express.urlencoded()
+- 日志输出
+  - morgan()
+- 为客户端提供跨域资源请求
+  - cors()
+
+## 路由设计
+参考：
+> https://github.com/gothinkster/realworld/tree/master/api
+
+- 用户相关
+- 文章相关
+- 标签相关
