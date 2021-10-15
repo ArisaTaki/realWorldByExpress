@@ -3,6 +3,9 @@ const { body } = require("express-validator");
 const { User } = require("../model");
 const md5 = require('../util/md5')
 const {Promise} = require("mongoose");
+const { verify } = require('../util/jwt')
+const { jwtSecret } = require('../config/config.default')
+const checkHasOwn = require('../util/checkHasOwn')
 
 exports.register = validate([
     // 1.配置验证规则
@@ -52,3 +55,22 @@ exports.login = [
         })
     ])
 ]
+
+exports.update = validate([
+    body('user.email').notEmpty().withMessage('您的新邮箱不能为空').bail()
+        .isEmail().withMessage('新邮箱格式不正确')
+        .bail()
+        .custom(async (email, { req }) => {
+            const type = 'email'
+            if (await checkHasOwn(req, email, type)) {
+                return Promise.reject('邮箱已被注册')
+            }
+        }),
+    body('user.username').notEmpty().withMessage('您的新用户名不能为空')
+        .custom(async (username, { req }) => {
+            const type = 'username'
+            if (await checkHasOwn(req, username, type)) {
+                return Promise.reject('用户名已被注册')
+            }
+        }),
+])

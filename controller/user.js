@@ -35,9 +35,12 @@ exports.login = async (req, res, next) => {
   // 2.数据验证
   // 3.生成token
   const user = req.user.toJSON()
+  //第三个参数就是过期时间，设置为一天
   const token = await jwt.sign({
     userId: user._id
-  }, jwtSecret)
+  }, jwtSecret, {
+    expiresIn: 60 * 60 * 24
+  })
   // 4.发送成功响应
   try {
     // 处理请求
@@ -55,7 +58,6 @@ exports.login = async (req, res, next) => {
 exports.getCurrentUser = async (req, res, next) => {
   try {
     // 处理请求
-
     res.status(200).json({
       user: req.user
     });
@@ -68,7 +70,20 @@ exports.getCurrentUser = async (req, res, next) => {
 exports.updateCurrentUser = async (req, res, next) => {
   try {
     // 处理请求
-    res.send("put /user");
+
+    const newUserInfo = req.body.user
+    const user = req.user
+
+    user.email = newUserInfo.email || user.email
+    user.username = newUserInfo.username || user.username
+    user.bio = newUserInfo.bio || user.bio
+    user.image = newUserInfo.image || user.image
+
+    await user.save()
+
+    res.status(200).json({
+        user
+    })
   } catch (err) {
     next(err);
   }
