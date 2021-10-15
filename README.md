@@ -176,3 +176,119 @@ Content-Type: application/json
 - 标签相关
 
 ## 提取控制器模块
+
+- router目录下的路由有两个参数，一个是校验规则，一个是controller目录下的控制器，控制器下就是请求的运行逻辑
+- 参数1：validator.xxx，在middleware中通过express-validator包实例化一个validate方法，并且在validator文件夹下调用
+- 参数2：xxxCtrl.xxx，在controller下书写的控制器进行逻辑运行
+- 完成一个简洁的分工合作的程序运行
+
+## error-handler错误处理
+使用util自带的util.format()进行错误处理，暴露的方法一定要有四个参数(err, req, res, next)
+
+## 用户注册与登录时的密码校验
+使用md5加密，参考文件util/md5 && model/user.js && validator 查看逻辑
+
+## JWT身份认证
+### 跨域认证的问题
+1. 用户向服务器发送用户名密码
+2. 服务器验证通过后，向当前会话（session）里保存相关的数据，比如说用户角色，登录时间啥的
+3. 服务器向用户返回一个session_id，写入用户的Cookie
+4. 用户随后的每一次请求都会通过Cookie，把session_id返回给服务器
+5. 服务器收到session_id，找到前期保存的数据，得到用户的身份
+
+这种模式的问题在于拓展性不好，如果是服务器集群的话，或者跨域的服务导向架构，要求session共享，每台机器都可以读取session
+举个例子说就是A，B两个网站是一家公司的管理服务，用户访问一个网站的时候另一个网站会自动登录，怎么实现？
+
+解决方案：服务器不保存session，数据存在客户端，每次请求都发回给服务器，JWT就是这个方案的代表
+
+## JWT原理
+
+JWT的原理就是，认证之后生成一个JSON对象，发回用户
+以后用户与服务端通信的时候，都要发回这个JSON对象，服务器完全靠这个对象认定用户身份，防止用户篡改，这个对象会加上签名
+
+服务器因此不保存任何的session，容易拓展了
+
+JWT的三部分：
+- Header（头部
+- Payload（负载
+- Signature（签名
+
+> Header.Payload.Signature
+
+### Header
+Header部分是一个JSON对象，描述JWT的元数据
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+
+alg表示签名的算法（algorithm），默认是HMAC SHA256（HS256)；typ属性表示令牌（token）的类型（type）
+JWT令牌统一写成JWT
+
+最后将上面的JSON对象使用Base64URL算法转成字符串
+
+### Payload
+也是一个JSON对象，存放实际需要传递的数据，JWT规定了七个字段
+- iss（issuer）：签发人
+- exp（expiration time）：过期时间
+- sub（subject）：主题
+- aud（audience）：受众
+- nbf（Not Before）：生效时间
+- iat（Issued At）：签发时间
+- jti（JWT ID):编号
+
+除了官方的字段你甚至可以在这个部分定义私有字段：
+```
+{
+  "sub": "amanohina",
+  "name": "ArisaTaki",
+  "admin": true,
+}
+```
+
+JWT默认是不加密的，不要把密码信息放在这个部分
+这个部分的JSON也会通过Base64URL算法转换成字符串
+
+### Signature
+该部分是对于前两个部分的签名，防止数据被篡改
+
+> https://jwt.io
+
+可以在jwt官网自行实验
+
+该部分首先需要一个密钥（secret），这个密钥只有服务器知道，无法泄露给用户，使用Header指定的签名算法（默认HMAC SHA256）
+按照下面的公式生产签名
+```
+HMACSHA256(
+  base64UrlEncode(header) + '.' +
+  base64UrlEncode(payload),
+  secret)
+```
+签名出来之后，把Header-Payload-Signature三部分拼接起来，每个部分用.分隔，返回给用户
+
+*JWT中消息体是透明的，使用签名可以保证信息不会被篡改，不能实现数据加密的功能，严格来说是编码内容*
+
+tips:什么是Base64URL
+
+JWT作为令牌，有些场合会放到URL里，Base64有三个字符+，/，=，在URL里面有特殊含义，Base64URl要被替换成
+= 被省略，+ 替换成 - /替换成_
+
+### JWT使用方式
+可以存在Cookie里，也可以存在localStorage里
+
+每次发生通信，都要带上JWT，放在HTTP请求的头信息里
+> Authoriztion: Bearer token
+
+另一种做法就是跨域的时候JWT放在POST请求的数据体里
+
+### JWT特点
+1. JWT默认不加密，但是也可以加密，生成了原始token之后可以用密钥再加密一次
+2. JWT不加密的情况下不能将秘密数据写入JWT
+3. 不仅可以用于认证，也可以用于交换信息，可以降低服务器查询数据库的次数
+4. 由于不保存session状态，无法在使用过程中废止某个token,或者更改token的权限，也就是说，JWT一旦签发了，在到期之前就会有效，除非服务器部署了额外的逻辑
+5. JWT本身包含了认证信息，一旦泄露，任何人都可以获得该令牌的所有权，JWT有效期一般设置的比较短，对于一些重要的权限，使用时应该进行二次验证
+6. JWT为了减少盗用，应该使用HTTPS协议传输
+
+### 在node.js中使用jwt
+> npm install jsonwebtoken
+
