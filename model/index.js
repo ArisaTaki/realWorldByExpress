@@ -21,5 +21,6 @@ db.once("open", () => {
 module.exports = {
     // 书写的时候是User，数据库里最后是users，这是Mongoose的规则
     User: mongoose.model('User', require('./user')),
-    Article: mongoose.model('Article', require('./article'))
+    Article: mongoose.model('Article', require('./article')),
+    Profile: mongoose.model('Profile', require('./profile'))
 }

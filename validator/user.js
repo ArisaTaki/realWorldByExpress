@@ -3,8 +3,6 @@ const { body } = require("express-validator");
 const { User } = require("../model");
 const md5 = require('../util/md5')
 const {Promise} = require("mongoose");
-const { verify } = require('../util/jwt')
-const { jwtSecret } = require('../config/config.default')
 const checkHasOwn = require('../util/checkHasOwn')
 
 exports.register = validate([
