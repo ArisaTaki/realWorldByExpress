@@ -1,8 +1,16 @@
+const { Profile } = require('../model')
+
 // 获取用户资料
 exports.getUserInfo = async (req, res, next) => {
   try {
     // 处理请求
-    res.send("get /:username");
+    const username = req.params.username
+
+    let profile = await Profile.findOne({ username })
+
+    res.status(200).json({
+      profile
+    });
   } catch (err) {
     next(err);
   }

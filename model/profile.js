@@ -17,7 +17,6 @@ const profileSchema = new mongoose.Schema({
     },
     following: {
         type: Boolean,
-        required: true,
         default: false
     }
 });

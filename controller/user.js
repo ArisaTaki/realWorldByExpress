@@ -1,4 +1,5 @@
 const { User }  = require('../model')
+const { Profile } = require('../model')
 const jwt = require('../util/jwt')
 const { jwtSecret } = require('../config/config.default')
 
@@ -13,8 +14,15 @@ exports.register = async (req, res, next) => {
     // 2.2 业务数据验证
     // 3.验证通过，将数据保存到数据库
     let user = new User(req.body.user)
+
+    //注册的时候也要加入profile数据库内一条数据
+    let profile = new Profile({
+      username: req.body.user.username
+    })
+
     // 保存到数据库
     await user.save()
+    await  profile.save()
 
     // 返回数据的时候不会连带用户的password
     user = user.toJSON()
