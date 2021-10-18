@@ -9,13 +9,9 @@ exports.createArticle = validate([
 ])
 
 exports.getArticle = validate([
-    param('articleId').custom(async value => {
-        if (!mongoose.isValidObjectId(value)) {
-            return Promise.reject('文章ID类型错误')
-            //同步失败
-            // throw new Error('文章ID类型错误')
-        }
-            // 同步成功
-        // return true
-    })
+    validate.isValidObjectId(['params'], ['articleId'])
+])
+
+exports.updateArticle = validate([
+    validate.isValidObjectId(['params'], ['articleId'])
 ])
