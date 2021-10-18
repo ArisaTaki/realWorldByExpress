@@ -22,7 +22,7 @@ exports.register = async (req, res, next) => {
 
     // 保存到数据库
     await user.save()
-    await  profile.save()
+    await profile.save()
 
     // 返回数据的时候不会连带用户的password
     user = user.toJSON()

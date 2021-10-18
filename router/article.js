@@ -1,6 +1,6 @@
 const express = require("express");
 const articleCtrl = require("../controller/article");
-
+const auth = require('../middleware/auth')
 const router = express.Router();
 
 // 获取文章列表
@@ -13,7 +13,7 @@ router.get("/feed", articleCtrl.getFollowedArticles);
 router.get("/:articleId", articleCtrl.getArticle);
 
 // 创建文章
-router.post("/", articleCtrl.createArticle);
+router.post("/", auth, articleCtrl.createArticle);
 
 // 更新文章
 router.put("/:articleId", articleCtrl.updateArticle);
