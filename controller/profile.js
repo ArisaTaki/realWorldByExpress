@@ -24,7 +24,7 @@ exports.followUser = async (req, res, next) => {
 
     let followProfile = await Profile.findOne({ username })
 
-    if (req.body.following && !followProfile.following) {
+    if (req.body.profile.following && !followProfile.following) {
       followProfile.following = true
       await followProfile.save()
       res.status(200).json({
@@ -50,7 +50,7 @@ exports.unFollowUser = async (req, res, next) => {
 
     let followProfile = await Profile.findOne({ username })
 
-    if (!req.body.following && followProfile.following) {
+    if (!req.body.profile.following && followProfile.following) {
       followProfile.following = false
       await followProfile.save()
       res.status(200).json({
@@ -63,7 +63,6 @@ exports.unFollowUser = async (req, res, next) => {
         }
       })
     }
-    res.send("post /:username/follow");
   } catch (err) {
     next(err);
   }
