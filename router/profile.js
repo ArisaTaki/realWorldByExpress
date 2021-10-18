@@ -12,6 +12,6 @@ router.get('/:username', profileValidate.getProfileInfo ,profileCtrl.getUserInfo
 router.post('/:username/follow', auth, profileValidate.followProfile, profileCtrl.followUser)
 
 // 取消关注
-router.delete('/:username/follow', auth, profileCtrl.unFollowUser)
+router.delete('/:username/follow', auth, profileValidate.unfollowProfile, profileCtrl.unFollowUser)
 
 module.exports = router
