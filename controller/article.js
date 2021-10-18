@@ -23,7 +23,13 @@ exports.getFollowedArticles = async (req, res, next) => {
 // 获取文章
 exports.getArticle = async (req, res, next) => {
   try {
-    res.send("get /:articleId");
+    const article = await Article.findById(req.params.articleId).populate('author');
+    if (!article) {
+      return res.status(400).end()
+    }
+    res.status(200).json({
+      article
+    });
   } catch (err) {
     next(err);
   }
