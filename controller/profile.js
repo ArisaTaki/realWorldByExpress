@@ -1,5 +1,3 @@
-const { Profile } = require('../model')
-
 // 获取用户资料
 exports.getUserInfo = async (req, res, next) => {
   try {
