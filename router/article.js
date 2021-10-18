@@ -20,7 +20,7 @@ router.post("/", auth, articleValidate.createArticle, articleCtrl.createArticle)
 router.put("/:articleId", auth, articleValidate.updateArticle, articleCtrl.updateArticle);
 
 // 删除文章
-router.delete("/:articleId", articleCtrl.deleteArticle);
+router.delete("/:articleId", auth, articleCtrl.deleteArticle);
 
 // 添加文章评论
 router.post("/:articleId/comments", articleCtrl.addArticleComment);

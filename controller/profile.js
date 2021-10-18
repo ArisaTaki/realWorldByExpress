@@ -4,13 +4,10 @@ const { Profile } = require('../model')
 exports.getUserInfo = async (req, res, next) => {
   try {
     // 处理请求
-    const username = req.params.username
-
-    let profile = await Profile.findOne({ username })
-
+    const profile = req.article
     res.status(200).json({
       profile
-    });
+    })
   } catch (err) {
     next(err);
   }
@@ -19,24 +16,7 @@ exports.getUserInfo = async (req, res, next) => {
 // 关注用户
 exports.followUser = async (req, res, next) => {
   try {
-
-    const username = req.params.username
-
-    let followProfile = await Profile.findOne({ username })
-
-    if (req.body.profile.following && !followProfile.following) {
-      followProfile.following = true
-      await followProfile.save()
-      res.status(200).json({
-        followProfile
-      });
-    } else {
-      res.status(422).json({
-        errors: {
-          body: "您已关注"
-        }
-      })
-    }
+    res.send('/hello')
   } catch (err) {
     next(err);
   }
