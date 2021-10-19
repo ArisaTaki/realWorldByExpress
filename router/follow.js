@@ -5,7 +5,7 @@ const auth = require('../middleware/auth')
 const router = express.Router();
 
 // 关注用户
-router.post('/:username', followCtrl.follow)
+router.post('/:username', auth, followValidate.follow, followCtrl.follow)
 
 // 取消关注用户
 router.delete('/:username', followCtrl.unfollow)

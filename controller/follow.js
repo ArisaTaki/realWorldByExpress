@@ -1,6 +1,16 @@
+const { Follow } = require('../model')
+
 exports.follow = async (req, res, next) => {
     try {
-        res.send('followed')
+        let follow = new Follow ({
+            userId: req.follow.uid,
+            followerId: req.user.uid
+        })
+
+        await follow.save()
+        res.status(201).json({
+            follow
+        })
     } catch (error) {
         next(error)
     }
