@@ -1,4 +1,5 @@
-const { Follow } = require('../model')
+const { Follow, User } = require('../model')
+const {raw} = require("express");
 
 exports.follow = async (req, res, next) => {
     try {
@@ -30,9 +31,21 @@ exports.getFollowUsers = async (req, res, next) => {
     try {
         // res.send('getUsers!')
         const user = req.user
-        const followers = await Follow.find({userId: user._id.toString()})
-        console.log(followers)
-        res.send('success')
+        const followers = await Follow.find({followerId: user._id.toString()})
+        let followerInfos = []
+        for (let i = 0; i < followers.length; i++) {
+            const res = await User.findOne({_id: followers[i].userId})
+            followerInfos.push(res)
+        }
+
+        // 这里不能使用map。内嵌的方法无法异步
+        // followers.map(async data => {
+        //     const res = await User.findOne({_id: data.user})
+        //     followerInfos.push(res)
+        // })
+        res.status(200).json({
+            followerInfos
+        })
     } catch (error) {
         next(error)
     }
