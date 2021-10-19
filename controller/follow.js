@@ -50,3 +50,20 @@ exports.getFollowUsers = async (req, res, next) => {
         next(error)
     }
 }
+
+exports.getFansUsers = async (req, res, next) => {
+    try {
+        const fans = await Follow.find({userId: req.user._id.toString()})
+        let fansInfo = []
+        for (let i = 0; i < fans.length; i++) {
+            const res = await User.findOne({_id: fans[i].followerId})
+            fansInfo.push(res)
+        }
+
+        res.status(200).json({
+            fansInfo
+        })
+    } catch (error) {
+        next(error)
+    }
+}

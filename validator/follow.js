@@ -59,3 +59,5 @@ exports.getFollowUsers = async (req, res, next) => {
     req.user = user
     next()
 }
+
+exports.getFansUsers = exports.getFollowUsers

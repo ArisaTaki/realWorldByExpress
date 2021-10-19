@@ -14,6 +14,7 @@ router.delete('/:username', auth, followValidate.unfollow, followCtrl.unfollow)
 router.get('/:username', auth, followValidate.getFollowUsers, followCtrl.getFollowUsers)
 
 // 获取当前用户粉丝列表
+router.get('/fans/:username', auth, followValidate.getFansUsers, followCtrl.getFansUsers)
 
 module.exports = router
 
