@@ -17,5 +17,8 @@ router.get('/user', auth, userCtrl.getCurrentUser)
 // 更新当前登录用户
 router.put('/user', auth, userValidator.update, userCtrl.updateCurrentUser)
 
+// 获取特定用户资料
+router.get('/user/:username', userValidator.findUser, userCtrl.getUserInfo )
+
 
 module.exports = router

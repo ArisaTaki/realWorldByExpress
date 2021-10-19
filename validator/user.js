@@ -1,5 +1,5 @@
 const validate = require('../middleware/validator')
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const { User } = require("../model");
 const md5 = require('../util/md5')
 const {Promise} = require("mongoose");
@@ -71,4 +71,14 @@ exports.update = validate([
                 return Promise.reject('用户名已被注册')
             }
         }),
+])
+
+exports.findUser = validate([
+    param('username').custom(async (username, { req }) => {
+        const user = await User.findOne({username})
+        if (!user) {
+            return Promise.reject('此用户名不存在')
+        }
+        req.user = user
+    })
 ])

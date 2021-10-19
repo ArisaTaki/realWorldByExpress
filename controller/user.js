@@ -96,3 +96,15 @@ exports.updateCurrentUser = async (req, res, next) => {
     next(err);
   }
 };
+
+// 获取特定用户
+exports.getUserInfo = async (req, res, next) => {
+  try {
+    const user = req.user
+    res.status(200).json({
+      user
+    })
+  } catch (err) {
+    next(err)
+  }
+}
