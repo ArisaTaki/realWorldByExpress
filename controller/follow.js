@@ -3,8 +3,8 @@ const { Follow } = require('../model')
 exports.follow = async (req, res, next) => {
     try {
         let follow = new Follow ({
-            userId: req.follow.uid,
-            followerId: req.user.uid
+            userId: req.follow._id,
+            followerId: req.user._id
         })
 
         await follow.save()
@@ -18,7 +18,9 @@ exports.follow = async (req, res, next) => {
 
 exports.unfollow = async (req, res, next) => {
     try {
-        res.send('unfollowed')
+        const follow = req.follow
+        await follow.remove()
+        res.status(204).end()
     } catch (error) {
         next(error)
     }

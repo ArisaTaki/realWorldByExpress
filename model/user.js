@@ -4,10 +4,6 @@ const md5 = require('../util/md5')
 
 const userSchema = new mongoose.Schema({
   ...baseModal,
-  uid: {
-    type: Number,
-    required: true
-  },
   username: {
     type: String,
     required: true,

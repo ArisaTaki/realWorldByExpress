@@ -13,9 +13,7 @@ exports.register = async (req, res, next) => {
     // 2.1 基本数据验证
     // 2.2 业务数据验证
     // 3.验证通过，将数据保存到数据库
-    const uid = await User.countDocuments() + 1
     let user = new User({
-      uid,
       ...req.body.user
     })
     // 保存到数据库

@@ -8,6 +8,6 @@ const router = express.Router();
 router.post('/:username', auth, followValidate.follow, followCtrl.follow)
 
 // 取消关注用户
-router.delete('/:username', followCtrl.unfollow)
+router.delete('/:username', auth, followValidate.unfollow, followCtrl.unfollow)
 
 module.exports = router
