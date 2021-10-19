@@ -25,3 +25,15 @@ exports.unfollow = async (req, res, next) => {
         next(error)
     }
 }
+
+exports.getFollowUsers = async (req, res, next) => {
+    try {
+        // res.send('getUsers!')
+        const user = req.user
+        const followers = await Follow.find({userId: user._id.toString()})
+        console.log(followers)
+        res.send('success')
+    } catch (error) {
+        next(error)
+    }
+}
