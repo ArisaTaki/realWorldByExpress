@@ -29,7 +29,7 @@ router.post("/:articleId/comments", auth, articleValidate.addComment, articleCtr
 router.get("/:articleId/comments", articleValidate.getComments ,articleCtrl.getComments);
 
 // 删除文章评论
-router.delete("/:articleId/comments/:id", articleCtrl.deleteComment);
+router.delete("/:commentId/comments", auth ,articleValidate.deleteComments, articleCtrl.deleteComment);
 
 // 文章点赞
 router.post("/:articleId/favorite", articleCtrl.likeArticle);

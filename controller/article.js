@@ -163,7 +163,9 @@ exports.getComments = async (req, res, next) => {
 exports.deleteComment = async (req, res, next) => {
   try {
     // 处理请求
-    res.send("delete /:articleId/comments/:id");
+    const comment = req.comment
+    await comment.remove()
+    res.status(204).end()
   } catch (err) {
     next(err);
   }
