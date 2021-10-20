@@ -16,9 +16,9 @@ exports.follow = [
                 return Promise.reject('不可关注自己')
             }
             const target = await User.findOne({ username })
-            const isFollowed = await Follow.findOne({ userId: target._id, followerId: req.user._id })
+            const isFollowed = await Follow.findOne({ user: target._id, follower: req.user._id })
             if (isFollowed) {
-                if (isFollowed.followerId.toString() === req.user._id.toString()) {
+                if (isFollowed.follower.toString() === req.user._id.toString()) {
                     return Promise.reject('您已关注')
                 }
             }
@@ -40,11 +40,10 @@ exports.unfollow = [
                 return Promise.reject('不可以对自己进行操作')
             }
             const target = await User.findOne({ username })
-            const isFollowed = await Follow.findOne({ userId: target._id, followerId: req.user._id })
-            if (isFollowed) {
-                if (isFollowed.followerId.toString() !== req.user._id.toString()) {
-                    return Promise.reject('您还没有关注')
-                }
+            console.log(target)
+            const isFollowed = await Follow.findOne({ user: target._id, follower: req.user._id })
+            if (!isFollowed) {
+                return Promise.reject('您还没有关注')
             }
             req.follow = isFollowed
         })

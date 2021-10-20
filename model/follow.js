@@ -4,12 +4,14 @@ const {Schema} = require("mongoose");
 
 const followSchema = new mongoose.Schema({
     ...baseURL,
-    userId: {
+    user: {
         type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
-    followerId: {
+    follower: {
         type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     }
 })

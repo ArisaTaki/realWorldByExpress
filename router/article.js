@@ -23,10 +23,10 @@ router.put("/:articleId", auth, articleValidate.updateArticle, articleCtrl.updat
 router.delete("/:articleId", auth, articleValidate.deleteArticle ,articleCtrl.deleteArticle);
 
 // 添加文章评论
-router.post("/:articleId/comments", articleCtrl.addArticleComment);
+router.post("/:articleId/comments", auth, articleValidate.addComment, articleCtrl.addArticleComment);
 
 // 获取文章评论列表
-router.get("/:articleId/comments", articleCtrl.getComments);
+router.get("/:articleId/comments", articleValidate.getComments ,articleCtrl.getComments);
 
 // 删除文章评论
 router.delete("/:articleId/comments/:id", articleCtrl.deleteComment);

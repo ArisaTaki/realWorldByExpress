@@ -4,10 +4,10 @@ const {raw} = require("express");
 exports.follow = async (req, res, next) => {
     try {
         let follow = new Follow ({
-            userId: req.follow._id,
-            followerId: req.user._id
+            user: req.follow._id,
+            follower: req.user._id
         })
-
+        await follow.populate(['user', 'follower'])
         await follow.save()
         res.status(201).json({
             follow
@@ -31,10 +31,10 @@ exports.getFollowUsers = async (req, res, next) => {
     try {
         // res.send('getUsers!')
         const user = req.user
-        const followers = await Follow.find({followerId: user._id.toString()})
+        const followers = await Follow.find({follower: user._id.toString()})
         let followerInfos = []
         for (let i = 0; i < followers.length; i++) {
-            const res = await User.findOne({_id: followers[i].userId})
+            const res = await User.findOne({_id: followers[i].user})
             followerInfos.push(res)
         }
 
@@ -44,7 +44,8 @@ exports.getFollowUsers = async (req, res, next) => {
         //     followerInfos.push(res)
         // })
         res.status(200).json({
-            followerInfos
+            followerInfos,
+            counts: followerInfos.length
         })
     } catch (error) {
         next(error)
@@ -53,15 +54,16 @@ exports.getFollowUsers = async (req, res, next) => {
 
 exports.getFansUsers = async (req, res, next) => {
     try {
-        const fans = await Follow.find({userId: req.user._id.toString()})
+        const fans = await Follow.find({user: req.user._id.toString()})
         let fansInfo = []
         for (let i = 0; i < fans.length; i++) {
-            const res = await User.findOne({_id: fans[i].followerId})
+            const res = await User.findOne({_id: fans[i].follower})
             fansInfo.push(res)
         }
 
         res.status(200).json({
-            fansInfo
+            fansInfo,
+            counts: fansInfo.length
         })
     } catch (error) {
         next(error)

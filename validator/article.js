@@ -36,3 +36,36 @@ exports.updateArticle = [
 ]
 
 exports.deleteArticle = exports.updateArticle
+
+exports.addComment = [
+    validate([
+        validate.isValidObjectId(['params'],['articleId'])
+    ]),
+    async (req, res, next) => {
+        const articleId = req.params.articleId
+        const article = await Article.findById(articleId)
+        req.article = article
+        if (!article) {
+            return res.status(404).end()
+        }
+        next()
+    },
+    validate([
+        body('comment.body').notEmpty().withMessage('评论不能为空').bail()
+    ])
+]
+
+exports.getComments = [
+    validate([
+        validate.isValidObjectId(['params'],['articleId'])
+    ]),
+    async (req, res, next) => {
+        const articleId = req.params.articleId
+        const article = await Article.findById(articleId)
+        req.article = article
+        if (!article) {
+            return res.status(404).end()
+        }
+        next()
+    },
+]
