@@ -140,6 +140,20 @@ exports.addArticleComment = async (req, res, next) => {
 exports.getComments = async (req, res, next) => {
   try {
     // 处理请求
+    const article = req.article
+    const comments = await Comments.find({ article: article._id })
+    let commentsInfos = []
+    for (let i = 0; i < comments.length; i++) {
+      commentsInfos.push({
+        _id: comments[i]._id,
+        user: await User.findOne( {_id: comments[i].user}),
+        comment: comments[i].comment
+      })
+    }
+    console.log(commentsInfos)
+    res.status(200).json({
+      comments: commentsInfos
+    })
   } catch (err) {
     next(err);
   }
