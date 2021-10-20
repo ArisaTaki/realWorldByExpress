@@ -23,5 +23,6 @@ module.exports = {
     User: mongoose.model('User', require('./user')),
     Article: mongoose.model('Article', require('./article')),
     Follow: mongoose.model('Follow', require('./follow')),
-    Comments: mongoose.model('Comments', require('./comments'))
+    Comments: mongoose.model('Comments', require('./comments')),
+    Favorite: mongoose.model('Favorite', require('./favorite'))
 }

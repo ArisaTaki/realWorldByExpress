@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", articleCtrl.getArticles);
 
 // 获取不同用户的文章列表
-router.get("/:username", articleValidate.getUserArticle, articleCtrl.getFollowedArticles);
+router.get("/list/:username", articleValidate.getUserArticle, articleCtrl.getFollowedArticles);
 
 // 获取文章
 router.get("/:articleId", articleValidate.getArticle, articleCtrl.getArticle);
@@ -32,9 +32,9 @@ router.get("/:articleId/comments", articleValidate.getComments ,articleCtrl.getC
 router.delete("/:commentId/comments", auth ,articleValidate.deleteComments, articleCtrl.deleteComment);
 
 // 文章点赞
-router.post("/:articleId/favorite", articleCtrl.likeArticle);
+router.post("/:articleId/favorite", auth, articleCtrl.likeArticle);
 
 // 取消文章点赞
-router.delete("/:articleId/favorite", articleCtrl.unLikeArticle);
+router.delete("/:articleId/favorite", auth, articleCtrl.unLikeArticle);
 
 module.exports = router;

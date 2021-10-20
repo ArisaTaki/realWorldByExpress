@@ -73,12 +73,12 @@ exports.update = validate([
         }),
 ])
 
-exports.findUser = validate([
-    param('username').custom(async (username, { req }) => {
-        const user = await User.findOne({username})
-        if (!user) {
-            return Promise.reject('此用户名不存在')
-        }
-        req.user = user
-    })
-])
+exports.findUser = async (req, res, next) => {
+    const username = req.params.username
+    const user = await User.findOne({username})
+    if (!user) {
+        return res.status(404).end()
+    }
+    req.user = user
+    next()
+}
