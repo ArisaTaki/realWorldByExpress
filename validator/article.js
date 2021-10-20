@@ -8,9 +8,19 @@ exports.createArticle = validate([
     body('article.body').notEmpty().withMessage('文章内容不能为空')
 ])
 
-exports.getArticle = validate([
+exports.getArticle = [validate([
     validate.isValidObjectId(['params'], ['articleId'])
-])
+]),
+    async (req, res, next) => {
+        const articleId = req.params.articleId
+        const article = await Article.findById(articleId).populate('author')
+        req.article = article
+        if (!article) {
+            return res.status(404).end()
+        }
+        next()
+    },
+]
 
 exports.updateArticle = [
     validate([
