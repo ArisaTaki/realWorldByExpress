@@ -1,6 +1,6 @@
 const { body } = require('express-validator')
 const validate = require('../middleware/validator')
-const { Article, Comments} = require('../model')
+const { Article, Comments, User} = require('../model')
 
 exports.createArticle = validate([
     body('article.title').notEmpty().withMessage('文章标题不能为空'),
@@ -97,6 +97,18 @@ exports.deleteComments = [
         if (req.user._id.toString() !== req.comment.user.toString()) {
             return res.status(403).end()
         }
+        next()
+    }
+]
+
+exports.getUserArticle = [
+    async (req, res, next) => {
+        const username = req.params.username
+        const user = await User.findOne({ username })
+        if(!user) {
+            return res.status(404).end()
+        }
+        req.user = user
         next()
     }
 ]

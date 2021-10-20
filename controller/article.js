@@ -47,7 +47,16 @@ exports.getArticles = async (req, res, next) => {
 exports.getFollowedArticles = async (req, res, next) => {
   try {
     // 处理请求
-    res.send("get /feed");
+    const user = req.user
+    // console.log(user)
+    const articles = await Article.find({ author: user._id })
+    articles.map(item => {
+      item.author = user
+    })
+    res.status(200).json({
+      articles,
+      counts: articles.length
+    })
   } catch (err) {
     next(err);
   }
@@ -171,7 +180,6 @@ exports.deleteComment = async (req, res, next) => {
 // 点赞
 exports.likeArticle = async (req, res, next) => {
   try {
-    // 处理请求
     res.send("post /:articleId/favorite");
   } catch (err) {
     next(err);

@@ -7,8 +7,8 @@ const router = express.Router();
 // 获取文章列表
 router.get("/", articleCtrl.getArticles);
 
-// 获取用户关注的作者文章列表
-router.get("/feed", articleCtrl.getFollowedArticles);
+// 获取不同用户的文章列表
+router.get("/:username", articleValidate.getUserArticle, articleCtrl.getFollowedArticles);
 
 // 获取文章
 router.get("/:articleId", articleValidate.getArticle, articleCtrl.getArticle);
