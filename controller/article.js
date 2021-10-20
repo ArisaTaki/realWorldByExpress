@@ -1,4 +1,4 @@
-const { Article, User, Comments } = require('../model')
+const { Article, User, Comments, Favorite} = require('../model')
 
 // 获取文章列表
 exports.getArticles = async (req, res, next) => {
@@ -180,7 +180,17 @@ exports.deleteComment = async (req, res, next) => {
 // 点赞
 exports.likeArticle = async (req, res, next) => {
   try {
-    res.send("post /:articleId/favorite");
+    const article = await Article.findOne({ _id: req.params.articleId })
+    const user = req.user
+    let favorite = new Favorite({
+      article: article._id,
+      user: user._id
+    })
+    await favorite.populate(['article', 'user'])
+    await favorite.save()
+    res.status(200).json({
+      favorite
+    })
   } catch (err) {
     next(err);
   }
@@ -190,7 +200,9 @@ exports.likeArticle = async (req, res, next) => {
 exports.unLikeArticle = async (req, res, next) => {
   try {
     // 处理请求
-    res.send("delete /:articleId/favorite");
+    const favorite = req.favorite
+    await favorite.remove()
+    res.status(204).end()
   } catch (err) {
     next(err);
   }

@@ -32,9 +32,9 @@ router.get("/:articleId/comments", articleValidate.getComments ,articleCtrl.getC
 router.delete("/:commentId/comments", auth ,articleValidate.deleteComments, articleCtrl.deleteComment);
 
 // 文章点赞
-router.post("/:articleId/favorite", auth, articleCtrl.likeArticle);
+router.post("/:articleId/favorite", auth, articleValidate.favoriteArticle , articleCtrl.likeArticle);
 
 // 取消文章点赞
-router.delete("/:articleId/favorite", auth, articleCtrl.unLikeArticle);
+router.delete("/:articleId/favorite", auth, articleValidate.unfavoriteArticle , articleCtrl.unLikeArticle);
 
 module.exports = router;

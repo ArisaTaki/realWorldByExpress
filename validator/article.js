@@ -1,6 +1,6 @@
-const { body } = require('express-validator')
+const { body, param} = require('express-validator')
 const validate = require('../middleware/validator')
-const { Article, Comments, User} = require('../model')
+const { Article, Comments, User, Favorite} = require('../model')
 
 exports.createArticle = validate([
     body('article.title').notEmpty().withMessage('文章标题不能为空'),
@@ -111,4 +111,49 @@ exports.getUserArticle = [
         req.user = user
         next()
     }
+]
+
+exports.favoriteArticle = [
+    validate([
+        validate.isValidObjectId(['params'], ['articleId'])
+    ]),
+    async (req, res, next) => {
+        const articleId = req.params.articleId
+        const article = await Article.findById(articleId)
+        if(!article) {
+            return res.status(404).end()
+        }
+        next()
+    },
+    validate([
+        param('articleId').custom(async (articleId, { req }) => {
+            const isFavorite = await Favorite.findOne({ article: articleId, user: req.user._id })
+            if (isFavorite) {
+                return Promise.reject('您已点赞，请勿重复操作')
+            }
+        })
+    ])
+]
+
+exports.unfavoriteArticle = [
+    validate([
+        validate.isValidObjectId(['params'], ['articleId'])
+    ]),
+    async (req, res, next) => {
+        const articleId = req.params.articleId
+        const article = await Article.findById(articleId)
+        if(!article) {
+            return res.status(404).end()
+        }
+        next()
+    },
+    validate([
+        param('articleId').custom(async (articleId, { req }) => {
+            const isFavorite = await Favorite.findOne({ article: articleId, user: req.user._id })
+            if (!isFavorite) {
+                return Promise.reject('未点赞，无法取消')
+            }
+            req.favorite = isFavorite
+        })
+    ])
 ]

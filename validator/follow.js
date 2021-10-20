@@ -18,9 +18,7 @@ exports.follow = [
             const target = await User.findOne({ username })
             const isFollowed = await Follow.findOne({ user: target._id, follower: req.user._id })
             if (isFollowed) {
-                if (isFollowed.follower.toString() === req.user._id.toString()) {
-                    return Promise.reject('您已关注')
-                }
+                return Promise.reject('您已关注')
             }
             req.follow = target
         })
