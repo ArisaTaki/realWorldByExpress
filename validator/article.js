@@ -145,6 +145,7 @@ exports.unfavoriteArticle = [
         if(!article) {
             return res.status(404).end()
         }
+        req.article = article
         next()
     },
     validate([

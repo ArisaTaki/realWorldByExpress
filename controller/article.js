@@ -186,8 +186,15 @@ exports.likeArticle = async (req, res, next) => {
       article: article._id,
       user: user._id
     })
+
     await favorite.populate(['article', 'user'])
     await favorite.save()
+    // 这里返回的数据里有不同步更新的counts，不发送这条数据给客户端
+    favorite = favorite.toJSON()
+    delete favorite.article.favoritesCount
+    article.favoritesCount += 1
+
+    article.save()
     res.status(200).json({
       favorite
     })
@@ -200,8 +207,13 @@ exports.likeArticle = async (req, res, next) => {
 exports.unLikeArticle = async (req, res, next) => {
   try {
     // 处理请求
+    const article = req.article
     const favorite = req.favorite
     await favorite.remove()
+
+    article.favoritesCount -= 1
+
+    article.save()
     res.status(204).end()
   } catch (err) {
     next(err);
